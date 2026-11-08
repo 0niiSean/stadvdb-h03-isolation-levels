@@ -1,0 +1,13 @@
+=== Exp3 REPEATABLE READ lock=True ===
+[ 0.03s] A | SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ  ->  OK, 0 row(s) affected
+[ 0.07s] B | SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ  ->  OK, 0 row(s) affected
+[ 0.07s] B | START TRANSACTION  ->  OK, 0 row(s) affected
+[ 0.07s] B | SELECT COUNT(*) FROM film_inventory WHERE price > 3 FOR UPDATE  ->  [(4,)]
+[ 0.07s] A | -- sleep 0.5s
+[ 0.07s] B | -- sleep 3s
+[ 0.57s] A | START TRANSACTION  ->  OK, 0 row(s) affected
+[ 1.08s] A |    ... waiting (blocked) on: INSERT INTO film_inventory (film_id, title, stock, price) VALUES (11, 'PHANTOM FILM', 10, 4.99)
+[ 3.07s] B | SELECT COUNT(*) FROM film_inventory WHERE price > 3 FOR UPDATE  ->  [(4,)]
+[ 3.07s] B | COMMIT  ->  OK, 0 row(s) affected
+[ 3.07s] A | INSERT INTO film_inventory (film_id, title, stock, price) VALUES (11, 'PHANTOM FILM', 10, 4.99)  ->  OK, 1 row(s) affected  [BLOCKED 2.50s]
+[ 3.08s] A | COMMIT  ->  OK, 0 row(s) affected

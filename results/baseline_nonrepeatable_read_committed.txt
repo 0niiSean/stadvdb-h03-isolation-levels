@@ -1,0 +1,12 @@
+=== NONREPEATABLE @ READ COMMITTED ===
+[ 0.03s] A | SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED  ->  OK, 0 row(s) affected
+[ 0.07s] B | SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED  ->  OK, 0 row(s) affected
+[ 0.07s] B | START TRANSACTION  ->  OK, 0 row(s) affected
+[ 0.07s] B | SELECT stock FROM film_inventory WHERE film_id = 1  ->  [(10,)]
+[ 0.07s] A | -- sleep 0.5s
+[ 0.07s] B | -- sleep 3s
+[ 0.57s] A | START TRANSACTION  ->  OK, 0 row(s) affected
+[ 0.57s] A | UPDATE film_inventory SET stock = stock + 5 WHERE film_id = 1  ->  OK, 1 row(s) affected
+[ 0.58s] A | COMMIT  ->  OK, 0 row(s) affected
+[ 3.07s] B | SELECT stock FROM film_inventory WHERE film_id = 1  ->  [(15,)]
+[ 3.07s] B | COMMIT  ->  OK, 0 row(s) affected

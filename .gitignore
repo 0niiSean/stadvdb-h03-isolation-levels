@@ -1,0 +1,4 @@
+# secrets - never commit the real password
+.env
+# python cache
+__pycache__/

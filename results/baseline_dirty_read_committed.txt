@@ -1,0 +1,12 @@
+=== DIRTY @ READ COMMITTED ===
+[ 0.04s] A | SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED  ->  OK, 0 row(s) affected
+[ 0.07s] B | SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED  ->  OK, 0 row(s) affected
+[ 0.07s] B | -- sleep 1s
+[ 0.07s] A | START TRANSACTION  ->  OK, 0 row(s) affected
+[ 0.07s] A | UPDATE film_inventory SET stock = 0 WHERE film_id = 1  ->  OK, 1 row(s) affected
+[ 0.07s] A | -- sleep 3s
+[ 1.07s] B | START TRANSACTION  ->  OK, 0 row(s) affected
+[ 1.08s] B | SELECT stock FROM film_inventory WHERE film_id = 1  ->  [(10,)]
+[ 3.08s] A | ROLLBACK  ->  OK, 0 row(s) affected
+[ 3.08s] B | SELECT stock FROM film_inventory WHERE film_id = 1  ->  [(10,)]
+[ 3.08s] B | COMMIT  ->  OK, 0 row(s) affected
