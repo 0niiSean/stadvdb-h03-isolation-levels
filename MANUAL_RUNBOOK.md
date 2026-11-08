@@ -13,12 +13,24 @@ mysql -u root -p isolation_lab
 - **Window A** = Session A (writer)
 - **Window B** = Session B (reader)
 
+Wait for the `mysql>` prompt. **All SQL in this file goes at the `mysql>` prompt, not at the plain `PS C:\...>` prompt.** Pasting SQL into plain PowerShell gives a parser error such as "Missing argument in parameter list". If you see `PS C:\...>`, you are not inside mysql yet; run the command above first. (Type `exit` to leave mysql.)
+
 Rules for every case:
 - Do the steps **in the numbered order**, switching windows as labelled.
 - Run the **reset** first. Before resetting, make sure no transaction is still open in either window (run `ROLLBACK;` in both if unsure).
 - Set the isolation level **before** `START TRANSACTION`, and check it with the `SELECT @@transaction_isolation;` line (good for a screenshot).
 
-## Reset (run in Window A before EVERY case)
+## Reset (before EVERY case)
+
+**Easiest option:** from a plain PowerShell prompt (`PS C:\...>`, not inside mysql), in the project folder:
+
+```
+python reset_data.py
+```
+
+It prints `film_inventory reset: 10 rows`. Make sure no transaction is open in either mysql window first.
+
+**Or inside mysql:** paste this at the `mysql>` prompt in Window A:
 
 ```sql
 DELETE FROM film_inventory;
