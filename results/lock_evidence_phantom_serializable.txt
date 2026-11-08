@@ -1,0 +1,40 @@
+Case: phantom_serializable  (isolation level SERIALIZABLE)
+Snapshot taken at 2.11s, while Session A's INSERT was blocked.
+connection ids: {186: 'A', 187: 'B'}
+
+performance_schema.data_locks (joined with threads)
+connection_id	ENGINE_TRANSACTION_ID	OBJECT_NAME	INDEX_NAME	LOCK_TYPE	LOCK_MODE	LOCK_STATUS	LOCK_DATA
+186	51167	film_inventory	PRIMARY	RECORD	X,INSERT_INTENTION	WAITING	supremum pseudo-record
+186	51167	film_inventory	None	TABLE	IX	GRANTED	None
+187	284534695334608	film_inventory	PRIMARY	RECORD	S	GRANTED	1
+187	284534695334608	film_inventory	PRIMARY	RECORD	S	GRANTED	10
+187	284534695334608	film_inventory	PRIMARY	RECORD	S	GRANTED	2
+187	284534695334608	film_inventory	PRIMARY	RECORD	S	GRANTED	3
+187	284534695334608	film_inventory	PRIMARY	RECORD	S	GRANTED	4
+187	284534695334608	film_inventory	PRIMARY	RECORD	S	GRANTED	5
+187	284534695334608	film_inventory	PRIMARY	RECORD	S	GRANTED	6
+187	284534695334608	film_inventory	PRIMARY	RECORD	S	GRANTED	7
+187	284534695334608	film_inventory	PRIMARY	RECORD	S	GRANTED	8
+187	284534695334608	film_inventory	PRIMARY	RECORD	S	GRANTED	9
+187	284534695334608	film_inventory	PRIMARY	RECORD	S	GRANTED	supremum pseudo-record
+187	284534695334608	film_inventory	None	TABLE	IS	GRANTED	None
+
+performance_schema.data_lock_waits
+REQUESTING_ENGINE_TRANSACTION_ID	BLOCKING_ENGINE_TRANSACTION_ID	REQUESTING_ENGINE_LOCK_ID	BLOCKING_ENGINE_LOCK_ID
+51167	284534695334608	3059718624728:96:106:4:1:3059707683864	3059718623952:344:106:4:1:3059707680792
+
+---- session timeline ----
+=== Lock evidence: phantom_serializable ===
+[ 0.03s] A | SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE  ->  OK, 0 row(s) affected
+[ 0.07s] B | SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE  ->  OK, 0 row(s) affected
+[ 0.07s] B | START TRANSACTION  ->  OK, 0 row(s) affected
+[ 0.07s] B | SELECT COUNT(*) FROM film_inventory WHERE price > 3  ->  [(4,)]
+[ 0.07s] A | -- sleep 0.5s
+[ 0.07s] B | -- sleep 2s
+[ 0.57s] A | START TRANSACTION  ->  OK, 0 row(s) affected
+[ 1.07s] A |    ... waiting (blocked) on: INSERT INTO film_inventory (film_id, title, stock, price) VALUES (11, 'PHANTOM FILM', 10, 4.99)
+[ 2.11s] spy | queried performance_schema while A is blocked (14 lock rows, 1 wait rows)
+[ 2.11s] B | -- sleep 1s
+[ 3.11s] B | COMMIT  ->  OK, 0 row(s) affected
+[ 3.11s] A | INSERT INTO film_inventory (film_id, title, stock, price) VALUES (11, 'PHANTOM FILM', 10, 4.99)  ->  OK, 1 row(s) affected  [BLOCKED 2.54s]
+[ 3.12s] A | COMMIT  ->  OK, 0 row(s) affected

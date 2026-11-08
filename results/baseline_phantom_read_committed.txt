@@ -7,7 +7,7 @@
 [ 0.07s] B | -- sleep 3s
 [ 0.57s] A | START TRANSACTION  ->  OK, 0 row(s) affected
 [ 0.57s] A | INSERT INTO film_inventory (film_id, title, stock, price) VALUES (11, 'PHANTOM FILM', 10, 4.99)  ->  OK, 1 row(s) affected
-[ 0.58s] A | COMMIT  ->  OK, 0 row(s) affected
+[ 0.59s] A | COMMIT  ->  OK, 0 row(s) affected
 [ 3.07s] B | SELECT COUNT(*) FROM film_inventory WHERE price > 3  ->  [(5,)]
 [ 3.07s] B | UPDATE film_inventory SET stock = stock + 1 WHERE price > 3  ->  OK, 5 row(s) affected
 [ 3.07s] B | SELECT COUNT(*) FROM film_inventory WHERE price > 3  ->  [(5,)]
