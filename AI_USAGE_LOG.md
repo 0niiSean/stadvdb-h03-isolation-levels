@@ -13,3 +13,5 @@ No report text was written by the AI. The student should read and be able to exp
 | 5 | `run_locks.py` | Wrote the 4 locking experiments (FOR SHARE, FOR SHARE, FOR UPDATE, LOCK TABLES), each with/without the lock, and the wait-time table. | Understand why each lock makes the other session wait. |
 | 6 | `.gitignore`, `.env.example`, `README.md` | Wrote the ignore rules, password template and run instructions. | Confirm `.env` is never committed. |
 | 7 | `AI_USAGE_LOG.md` | Wrote this log. | Add anything else you used AI for. |
+| 8 | `timeline_tables.py` | Wrote a script that reads each `.txt` log in `results/` and writes `results/timelines.md` (one Time / Session A / Session B table per run). Ran it to generate the file. | Check a few tables against the original `.txt` logs. |
+| 9 | `MANUAL_RUNBOOK.md` | Wrote copy-paste SQL, window labels, step order, expected results and a reset command for the dirty read, non-repeatable read and phantom (REPEATABLE READ) cases. | Run it by hand in two mysql windows and confirm the expected values (esp. the UPDATE row count in case 3). |
